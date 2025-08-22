@@ -21,7 +21,7 @@ const CoinTable = () => {
   }, []);
 
   return (
-    <div className="mt-8 mx-28 overflow-x-auto">
+    <div className="mt-8 mx-30 overflow-x-auto">
       <table className="w-full text-left border-collapse bg-gray-900 text-gray-200 shadow-lg rounded-xl overflow-hidden">
         <thead>
           <tr className="bg-gray-800 text-gray-300 uppercase text-sm">
