@@ -1,4 +1,5 @@
 import Navbar from '@/components/Navbar'
+import SearchBar from '@/components/SearchBar'
 import React from 'react'
 
 const page = () => {
@@ -6,6 +7,8 @@ const page = () => {
     <>
       <div className="container">
         <Navbar />
+
+        <SearchBar />
       </div>
     </>
   )
