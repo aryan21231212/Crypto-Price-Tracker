@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from "react";
 
 const CoinTable = () => {
-  const [coins, setCoins] = useState([]);
+  const [coins, setCoins] = useState<any[]>([]);
+  const [filteredCoins, setFilteredCoins] = useState<any[]>([]);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const fetchCoins = async () => {
@@ -12,6 +14,7 @@ const CoinTable = () => {
         );
         const data = await res.json();
         setCoins(data);
+        setFilteredCoins(data);
       } catch (error) {
         console.error("Error fetching coins:", error);
       }
@@ -20,10 +23,47 @@ const CoinTable = () => {
     fetchCoins();
   }, []);
 
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.toLowerCase();
+    setQuery(value);
+    const results = coins.filter(
+      (coin) =>
+        coin.name.toLowerCase().includes(value) ||
+        coin.symbol.toLowerCase().includes(value)
+    );
+    setFilteredCoins(results);
+  };
+
   return (
-    <div className="flex w-full justify-center mt-8 px-4">
+    <div className="flex flex-col items-center w-full mt-8 px-4">
+
+      <div className="mb-6 w-full max-w-md relative">
+        <input
+          type="text"
+          value={query}
+          onChange={handleSearch}
+          placeholder="Search for a coin..."
+          className="w-full pl-10 pr-4 py-2 rounded-xl bg-gray-900 text-gray-200 border border-gray-700 focus:ring-2 focus:ring-yellow-400 focus:outline-none shadow-md placeholder-gray-500"
+        />
+        <svg
+          className="absolute left-3 top-2.5 w-5 h-5 text-gray-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M21 21l-6-6m2.5-5.5a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z"
+          />
+        </svg>
+      </div>
+
+
       <div className="w-full flex justify-center max-w-6xl overflow-x-auto">
-        <table className=" text-left border-collapse bg-gray-900 text-gray-200 shadow-lg rounded-xl overflow-hidden">
+        <table className=" w-full text-left border-collapse bg-gray-900 text-gray-200 shadow-lg rounded-xl overflow-hidden">
           <thead>
             <tr className="bg-gray-800 text-gray-300 uppercase text-sm">
               <th className="px-4 py-3">S.NO</th>
@@ -34,7 +74,7 @@ const CoinTable = () => {
             </tr>
           </thead>
           <tbody>
-            {coins.map((coin: any, idx) => (
+            {filteredCoins.map((coin, idx) => (
               <tr
                 onClick={() => (window.location.href = `/coin/${coin.id}`)}
                 key={coin.id}
