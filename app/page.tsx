@@ -1,3 +1,4 @@
+import CoinTable from '@/components/CoinTable'
 import Navbar from '@/components/Navbar'
 import SearchBar from '@/components/SearchBar'
 import React from 'react'
@@ -7,8 +8,8 @@ const page = () => {
     <>
       <div className="container">
         <Navbar />
-
         <SearchBar />
+        <CoinTable />
       </div>
     </>
   )
