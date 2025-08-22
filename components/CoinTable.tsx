@@ -22,11 +22,11 @@ const CoinTable = () => {
 
   return (
     <div className="flex w-full justify-center mt-8 px-4">
-      <div className="w-full max-w-6xl overflow-x-auto">
-        <table className="w-full text-left border-collapse bg-gray-900 text-gray-200 shadow-lg rounded-xl overflow-hidden">
+      <div className="w-full flex justify-center max-w-6xl overflow-x-auto">
+        <table className=" text-left border-collapse bg-gray-900 text-gray-200 shadow-lg rounded-xl overflow-hidden">
           <thead>
             <tr className="bg-gray-800 text-gray-300 uppercase text-sm">
-              <th className="px-4 py-3">#</th>
+              <th className="px-4 py-3">S.NO</th>
               <th className="px-4 py-3">Coin</th>
               <th className="px-4 py-3">Price</th>
               <th className="px-4 py-3">24h Change</th>
