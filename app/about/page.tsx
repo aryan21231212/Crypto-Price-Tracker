@@ -6,7 +6,7 @@ const AboutPage = () => {
 
       <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-gray-900 py-10 px-5 text-center">
         <h1 className="text-4xl font-extrabold">About CryptoTracker</h1>
-        <p className="mt-2 text-lg">Track crypto prices in real-time with ease 🚀</p>
+        <p className="mt-2 text-lg">Track crypto prices in real-time with ease </p>
       </div>
 
 
