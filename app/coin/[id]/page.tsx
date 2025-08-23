@@ -12,7 +12,6 @@ import {
 } from "recharts";
 import Image from "next/image";
 
-
 interface CoinData {
   name: string;
   symbol: string;
@@ -91,6 +90,20 @@ const CoinPage = () => {
     fetchChart();
   }, [id]);
 
+
+  const formatNumber = (num: number): string => {
+    if (num >= 1e12) {
+      return `$${(num / 1e12).toFixed(2)}T`;
+    } else if (num >= 1e9) {
+      return `$${(num / 1e9).toFixed(2)}B`;
+    } else if (num >= 1e6) {
+      return `$${(num / 1e6).toFixed(2)}M`;
+    } else if (num >= 1e3) {
+      return `$${(num / 1e3).toFixed(2)}K`;
+    }
+    return `$${num.toFixed(2)}`;
+  };
+
   if (!coin) return <div className="text-gray-300 text-center mt-10">Loading...</div>;
 
   return (
@@ -110,22 +123,31 @@ const CoinPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-10">
-        <div className="bg-[#1E1E1E] p-6 rounded-xl shadow text-center">
-          <p className="text-gray-400">Current Price</p>
-          <p className="text-2xl font-bold">${coin.market_data.current_price.usd.toLocaleString()}</p>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10">
+        <div className="bg-[#1E1E1E] p-4 rounded-xl shadow text-center">
+          <p className="text-gray-400 text-xs sm:text-sm">Current Price</p>
+          <p className="text-lg sm:text-2xl font-bold truncate" title={`$${coin.market_data.current_price.usd.toLocaleString()}`}>
+            ${coin.market_data.current_price.usd.toLocaleString()}
+          </p>
         </div>
-        <div className="bg-[#1E1E1E] p-6 rounded-xl shadow text-center">
-          <p className="text-gray-400">Market Cap</p>
-          <p className="text-2xl font-bold">${coin.market_data.market_cap.usd.toLocaleString()}</p>
+        <div className="bg-[#1E1E1E] p-4 rounded-xl shadow text-center">
+          <p className="text-gray-400 text-xs sm:text-sm">Market Cap</p>
+          <p className="text-lg sm:text-2xl font-bold truncate" title={`$${coin.market_data.market_cap.usd.toLocaleString()}`}>
+            {formatNumber(coin.market_data.market_cap.usd)}
+          </p>
         </div>
-        <div className="bg-[#1E1E1E] p-6 rounded-xl shadow text-center">
-          <p className="text-gray-400">24h High</p>
-          <p className="text-2xl font-bold">${coin.market_data.high_24h.usd.toLocaleString()}</p>
+        <div className="bg-[#1E1E1E] p-4 rounded-xl shadow text-center">
+          <p className="text-gray-400 text-xs sm:text-sm">24h High</p>
+          <p className="text-lg sm:text-2xl font-bold truncate" title={`$${coin.market_data.high_24h.usd.toLocaleString()}`}>
+            ${coin.market_data.high_24h.usd.toLocaleString()}
+          </p>
         </div>
-        <div className="bg-[#1E1E1E] p-6 rounded-xl shadow text-center">
-          <p className="text-gray-400">24h Low</p>
-          <p className="text-2xl font-bold">${coin.market_data.low_24h.usd.toLocaleString()}</p>
+        <div className="bg-[#1E1E1E] p-4 rounded-xl shadow text-center">
+          <p className="text-gray-400 text-xs sm:text-sm">24h Low</p>
+          <p className="text-lg sm:text-2xl font-bold truncate" title={`$${coin.market_data.low_24h.usd.toLocaleString()}`}>
+            ${coin.market_data.low_24h.usd.toLocaleString()}
+          </p>
         </div>
       </div>
 
@@ -162,7 +184,7 @@ const CoinPage = () => {
           }}
         ></p>
 
-        <div className="mt-6 mb-8">
+        <div className="mt-6 mb-20">
           <h3 className="text-lg font-semibold mb-2">Official Links</h3>
           <ul className="space-y-2 text-yellow-400">
             {coin.links.homepage[0] && (

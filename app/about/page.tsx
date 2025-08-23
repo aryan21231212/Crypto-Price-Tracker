@@ -4,17 +4,19 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-200 font-sans">
 
-      <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-gray-900 py-10 px-5 text-center">
-        <h1 className="text-4xl font-extrabold">About CryptoTracker</h1>
-        <p className="mt-2 text-lg">Track crypto prices in real-time with ease </p>
+
+      <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-gray-900 py-8 md:py-10 px-5 text-center">
+        <h1 className="text-3xl md:text-4xl font-extrabold">About CryptoTracker</h1>
+        <p className="mt-2 text-base md:text-lg">Track crypto prices in real-time with ease</p>
       </div>
 
 
-      <div className="max-w-3xl mx-auto p-8 leading-relaxed">
+      <div className="max-w-3xl mx-auto p-5 md:p-8 leading-relaxed">
+
 
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-3 text-yellow-400">What is CryptoTracker?</h2>
-          <p className="text-base text-gray-300">
+          <h2 className="text-xl md:text-2xl font-bold mb-3 text-yellow-400">What is CryptoTracker?</h2>
+          <p className="text-sm md:text-base text-gray-300">
             CryptoTracker is a simple, beginner-friendly application built with{" "}
             <span className="font-semibold text-yellow-400">Next.js</span> and{" "}
             <span className="font-semibold text-yellow-400">TailwindCSS</span> to
@@ -32,20 +34,20 @@ const AboutPage = () => {
 
 
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-3 text-yellow-400">Data Source</h2>
-          <p className="text-base text-gray-300">
+          <h2 className="text-xl md:text-2xl font-bold mb-3 text-yellow-400">Data Source</h2>
+          <p className="text-sm md:text-base text-gray-300">
             All market data, including price, volume, and market cap, is fetched
             from the{" "}
             <span className="font-semibold text-yellow-400">free CoinGecko API</span>.
-            It’s fast, reliable, and perfect for learning how to work with APIs in
+            It's fast, reliable, and perfect for learning how to work with APIs in
             real-world projects.
           </p>
         </section>
 
 
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-3 text-yellow-400">Disclaimer</h2>
-          <p className="text-sm italic text-gray-400">
+          <h2 className="text-xl md:text-2xl font-bold mb-3 text-yellow-400">Disclaimer</h2>
+          <p className="text-xs md:text-sm italic text-gray-400">
             Prices may be delayed by a few seconds. This app is for{" "}
             <span className="font-semibold">educational purposes only</span> and
             should not be considered financial advice.
@@ -54,8 +56,8 @@ const AboutPage = () => {
 
 
         <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-3 text-yellow-400">Credits</h2>
-          <p className="text-base text-gray-300 mb-3">
+          <h2 className="text-xl md:text-2xl font-bold mb-3 text-yellow-400">Credits</h2>
+          <p className="text-sm md:text-base text-gray-300 mb-3">
             Built by <span className="font-semibold">Aryan Pratap Singh</span>.{" "}
             Check out the project on{" "}
             <a
@@ -67,9 +69,9 @@ const AboutPage = () => {
               GitHub
             </a>.
           </p>
-
-         
         </section>
+
+   
       </div>
     </div>
   );
