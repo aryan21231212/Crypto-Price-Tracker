@@ -10,35 +10,81 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import Image from "next/image";
+
+
+interface CoinData {
+  name: string;
+  symbol: string;
+  image: {
+    large: string;
+  };
+  market_data: {
+    current_price: {
+      usd: number;
+    };
+    market_cap: {
+      usd: number;
+    };
+    high_24h: {
+      usd: number;
+    };
+    low_24h: {
+      usd: number;
+    };
+  };
+  description: {
+    en: string;
+  };
+  links: {
+    homepage: string[];
+    repos_url: {
+      github: string[];
+    };
+    subreddit_url: string;
+  };
+}
+
+interface ChartData {
+  date: string;
+  price: number;
+}
 
 const CoinPage = () => {
   const { id } = useParams();
-  const [coin, setCoin] = useState<any>(null);
-  const [chartData, setChartData] = useState<any[]>([]);
-
+  const [coin, setCoin] = useState<CoinData | null>(null);
+  const [chartData, setChartData] = useState<ChartData[]>([]);
 
   useEffect(() => {
     const fetchCoin = async () => {
-      const res = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${id}`
-      );
-      const data = await res.json();
-      setCoin(data);
+      try {
+        const res = await fetch(
+          `https://api.coingecko.com/api/v3/coins/${id}`
+        );
+        const data = await res.json();
+        setCoin(data);
+      } catch (error) {
+        console.error("Error fetching coin data:", error);
+      }
     };
 
     const fetchChart = async () => {
-      const res = await fetch(
-        `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`
-      );
-      const data = await res.json();
-      const formatted = data.prices.map((p: any) => ({
-        date: new Date(p[0]).toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-        }),
-        price: p[1],
-      }));
-      setChartData(formatted);
+      try {
+        const res = await fetch(
+          `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`
+        );
+        const data = await res.json();
+        const formatted = data.prices.map((p: [number, number]) => ({
+          date: new Date(p[0]).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          }),
+          price: p[1],
+        }));
+        setChartData(formatted);
+      } catch (error) {
+        console.error("Error fetching chart data:", error);
+      }
     };
 
     fetchCoin();
@@ -51,13 +97,18 @@ const CoinPage = () => {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 text-gray-200">
 
       <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-        <img src={coin.image.large} alt={coin.name} className="w-24 h-24 sm:w-28 sm:h-28 rounded-full" />
+        <Image 
+          src={coin.image.large} 
+          alt={coin.name} 
+          width={96} 
+          height={96} 
+          className="w-24 h-24 sm:w-28 sm:h-28 rounded-full" 
+        />
         <div className="text-center sm:text-left">
           <h1 className="text-3xl font-bold text-yellow-400">{coin.name}</h1>
           <p className="uppercase text-gray-400">{coin.symbol}</p>
         </div>
       </div>
-
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-10">
         <div className="bg-[#1E1E1E] p-6 rounded-xl shadow text-center">
@@ -77,7 +128,6 @@ const CoinPage = () => {
           <p className="text-2xl font-bold">${coin.market_data.low_24h.usd.toLocaleString()}</p>
         </div>
       </div>
-
 
       <div className="bg-[#1E1E1E] p-6 rounded-xl shadow mt-12">
         <h2 className="text-xl font-bold mb-4">7 Day Price Chart</h2>
@@ -101,7 +151,6 @@ const CoinPage = () => {
         </ResponsiveContainer>
       </div>
 
-
       <div className="bg-[#1E1E1E] p-6 rounded-xl shadow mt-12">
         <h2 className="text-xl font-bold mb-4">About {coin.name}</h2>
         <p
@@ -112,7 +161,6 @@ const CoinPage = () => {
               : "No description available.",
           }}
         ></p>
-
 
         <div className="mt-6 mb-8">
           <h3 className="text-lg font-semibold mb-2">Official Links</h3>
