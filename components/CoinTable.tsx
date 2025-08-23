@@ -1,9 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
 
+
 const CoinTable = () => {
-  const [coins, setCoins] = useState<any[]>([]);
-  const [filteredCoins, setFilteredCoins] = useState<any[]>([]);
+  interface Coin {
+    id: string;
+    name: string;
+    symbol: string;
+    image: string;
+    current_price: number;
+    price_change_percentage_24h: number;
+    market_cap: number;
+  }
+
+  const [coins, setCoins] = useState<Coin[]>([]);
+  const [filteredCoins, setFilteredCoins] = useState<Coin[]>([]);
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -22,7 +33,6 @@ const CoinTable = () => {
 
     fetchCoins();
   }, []);
-
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toLowerCase();
@@ -63,7 +73,7 @@ const CoinTable = () => {
 
 
       <div className="w-full flex justify-center max-w-6xl overflow-x-auto">
-        <table className=" w-full text-left border-collapse bg-gray-900 text-gray-200 shadow-lg rounded-xl overflow-hidden">
+        <table className="w-full text-left border-collapse bg-gray-900 text-gray-200 shadow-lg rounded-xl overflow-hidden">
           <thead>
             <tr className="bg-gray-800 text-gray-300 uppercase text-sm">
               <th className="px-4 py-3">S.NO</th>
@@ -81,8 +91,14 @@ const CoinTable = () => {
                 className="border-b border-gray-700 hover:bg-gray-800 transition cursor-pointer"
               >
                 <td className="px-4 py-3">{idx + 1}</td>
-                <td className="px-4 py-3 flex items-center space-x-2">
-                  <img src={coin.image} alt={coin.name} className="w-6 h-6" />
+                <td className="px-4 py-3 flex items-center gap-2">
+                  <img
+                    src={coin.image}
+                    alt={coin.name}
+                    width={24}
+                    height={24}
+                    className="w-6 h-6"
+                  />
                   <span>{coin.name}</span>
                   <span className="text-gray-500 text-sm">
                     ({coin.symbol.toUpperCase()})
@@ -92,11 +108,10 @@ const CoinTable = () => {
                   ${coin.current_price.toLocaleString()}
                 </td>
                 <td
-                  className={`px-4 py-3 font-semibold ${
-                    coin.price_change_percentage_24h >= 0
+                  className={`px-4 py-3 font-semibold ${coin.price_change_percentage_24h >= 0
                       ? "text-green-400"
                       : "text-red-400"
-                  }`}
+                    }`}
                 >
                   {coin.price_change_percentage_24h.toFixed(2)}%
                 </td>
@@ -106,6 +121,7 @@ const CoinTable = () => {
               </tr>
             ))}
           </tbody>
+
         </table>
       </div>
     </div>

@@ -2,7 +2,16 @@
 import React, { useEffect, useState } from "react";
 
 const CoinCards = () => {
-  const [coins, setCoins] = useState<any[]>([]);
+  interface Coin {
+    id: string;
+    name: string;
+    symbol: string;
+    image: string;
+    current_price: number;
+    price_change_percentage_24h: number;
+  }
+
+  const [coins, setCoins] = useState<Coin[]>([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
@@ -52,7 +61,7 @@ const CoinCards = () => {
             >
 
               <div className="flex items-center space-x-3">
-                <img src={coin.image} alt={coin.name} className="w-10 h-10 rounded-full" />
+                <img src={coin.image} alt={coin.name} className="w-10 h-10 rounded-full"/>
                 <div>
                   <h2 className="text-base font-semibold text-gray-100">
                     {coin.name}
