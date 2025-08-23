@@ -39,7 +39,7 @@ const AboutPage = () => {
             All market data, including price, volume, and market cap, is fetched
             from the{" "}
             <span className="font-semibold text-yellow-400">free CoinGecko API</span>.
-            It's fast, reliable, and perfect for learning how to work with APIs in
+            Its fast, reliable, and perfect for learning how to work with APIs in
             real-world projects.
           </p>
         </section>
