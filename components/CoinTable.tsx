@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-
+import Image from "next/image";
 
 const CoinTable = () => {
   interface Coin {
@@ -46,7 +46,7 @@ const CoinTable = () => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full mt-8 px-4">
+    <div className="flex flex-col items-center w-screen mt-8 px-4">
 
       <div className="mb-6 w-full max-w-md relative">
         <input
@@ -73,7 +73,7 @@ const CoinTable = () => {
 
 
       <div className="w-full flex justify-center max-w-6xl overflow-x-auto">
-        <table className="w-full text-left border-collapse bg-gray-900 text-gray-200 shadow-lg rounded-xl overflow-hidden">
+        <table className="w-full mb-20 text-left border-collapse bg-gray-900 text-gray-200 shadow-lg rounded-xl overflow-hidden">
           <thead>
             <tr className="bg-gray-800 text-gray-300 uppercase text-sm">
               <th className="px-4 py-3">S.NO</th>
@@ -92,12 +92,11 @@ const CoinTable = () => {
               >
                 <td className="px-4 py-3">{idx + 1}</td>
                 <td className="px-4 py-3 flex items-center gap-2">
-                  <img
+                  <Image
                     src={coin.image}
                     alt={coin.name}
                     width={24}
                     height={24}
-                    className="w-6 h-6"
                   />
                   <span>{coin.name}</span>
                   <span className="text-gray-500 text-sm">

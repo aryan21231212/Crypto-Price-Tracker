@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 const CoinCards = () => {
   interface Coin {
@@ -61,7 +62,7 @@ const CoinCards = () => {
             >
 
               <div className="flex items-center space-x-3">
-                <img src={coin.image} alt={coin.name} className="w-10 h-10 rounded-full"/>
+                <Image width={24} height={24} src={coin.image} alt={coin.name} className="rounded-full"/>
                 <div>
                   <h2 className="text-base font-semibold text-gray-100">
                     {coin.name}
