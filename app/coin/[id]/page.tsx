@@ -53,27 +53,53 @@ const CoinPage = () => {
   const { id } = useParams();
   const [coin, setCoin] = useState<CoinData | null>(null);
   const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCoin = async () => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+      
       try {
-        const res = await fetch(
-          `https://api.coingecko.com/api/v3/coins/${id}`
-        );
-        const data = await res.json();
-        setCoin(data);
-      } catch (error) {
-        console.error("Error fetching coin data:", error);
-      }
-    };
 
-    const fetchChart = async () => {
-      try {
-        const res = await fetch(
-          `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`
+        const coinRes = await fetch(
+          `https://api.coingecko.com/api/v3/coins/${id}`,
+          {
+            headers: {
+              'Accept': 'application/json',
+            },
+
+            signal: AbortSignal.timeout(10000)
+          }
         );
-        const data = await res.json();
-        const formatted = data.prices.map((p: [number, number]) => ({
+        
+        if (!coinRes.ok) {
+          throw new Error(`Failed to fetch coin data: ${coinRes.status}`);
+        }
+        
+        const coinData = await coinRes.json();
+        setCoin(coinData);
+
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const chartRes = await fetch(
+          `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`,
+          {
+            headers: {
+              'Accept': 'application/json',
+            },
+            signal: AbortSignal.timeout(10000)
+          }
+        );
+        
+        if (!chartRes.ok) {
+          throw new Error(`Failed to fetch chart data: ${chartRes.status}`);
+        }
+        
+        const chartData = await chartRes.json();
+        const formatted = chartData.prices.map((p: [number, number]) => ({
           date: new Date(p[0]).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
@@ -81,15 +107,22 @@ const CoinPage = () => {
           price: p[1],
         }));
         setChartData(formatted);
-      } catch (error) {
-        console.error("Error fetching chart data:", error);
+        
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error("Error fetching data:", error);
+          setError(error.message || "Failed to fetch data. Please try again later.");
+        } else {
+          console.error("Unexpected error:", error);
+          setError("An unexpected error occurred. Please try again later.");
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCoin();
-    fetchChart();
+    fetchData();
   }, [id]);
-
 
   const formatNumber = (num: number): string => {
     if (num >= 1e12) {
@@ -104,7 +137,78 @@ const CoinPage = () => {
     return `$${num.toFixed(2)}`;
   };
 
-  if (!coin) return <div className="text-gray-300 text-center mt-10">Loading...</div>;
+  const retryFetch = () => {
+    setError(null);
+    setLoading(true);
+
+    setTimeout(() => {
+      const fetchData = async () => {
+        try {
+          const coinRes = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
+          const coinData = await coinRes.json();
+          setCoin(coinData);
+
+          const chartRes = await fetch(
+            `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=7&interval=daily`
+          );
+          const chartData = await chartRes.json();
+          const formatted = chartData.prices.map((p: [number, number]) => ({
+            date: new Date(p[0]).toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            }),
+            price: p[1],
+          }));
+          setChartData(formatted);
+          setError(null);
+        } catch (error) {
+          console.error("Error retrying fetch:", error);
+          setError("Failed to fetch data. Please check your connection and try again.");
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+      fetchData();
+    }, 1000);
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 text-gray-200 text-center">
+        <div className="flex flex-col items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-400 mb-4"></div>
+          <p>Loading coin data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 text-gray-200 text-center">
+        <div className="bg-red-900/30 p-6 rounded-xl max-w-md mx-auto">
+          <div className="text-red-400 text-5xl mb-4">⚠️</div>
+          <h2 className="text-xl font-bold mb-2">Error Loading Data</h2>
+          <p className="mb-4">{error}</p>
+          <button
+            onClick={retryFetch}
+            className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-semibold rounded-lg transition"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!coin) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 text-gray-200 text-center">
+        <p>No coin data available.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 text-gray-200">
@@ -122,7 +226,6 @@ const CoinPage = () => {
           <p className="uppercase text-gray-400">{coin.symbol}</p>
         </div>
       </div>
-
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10">
         <div className="bg-[#1E1E1E] p-4 rounded-xl shadow text-center">
@@ -153,24 +256,30 @@ const CoinPage = () => {
 
       <div className="bg-[#1E1E1E] p-6 rounded-xl shadow mt-12">
         <h2 className="text-xl font-bold mb-4">7 Day Price Chart</h2>
-        <ResponsiveContainer width="100%" height={350}>
-          <LineChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-            <XAxis dataKey="date" stroke="#aaa" />
-            <YAxis stroke="#aaa" />
-            <Tooltip
-              contentStyle={{ backgroundColor: "#1E1E1E", border: "none" }}
-              labelStyle={{ color: "#fff" }}
-            />
-            <Line
-              type="monotone"
-              dataKey="price"
-              stroke="#facc15"
-              strokeWidth={2}
-              dot={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        {chartData.length > 0 ? (
+          <ResponsiveContainer width="100%" height={350}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+              <XAxis dataKey="date" stroke="#aaa" />
+              <YAxis stroke="#aaa" />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#1E1E1E", border: "none" }}
+                labelStyle={{ color: "#fff" }}
+              />
+              <Line
+                type="monotone"
+                dataKey="price"
+                stroke="#facc15"
+                strokeWidth={2}
+                dot={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="h-64 flex items-center justify-center text-gray-400">
+            Chart data not available
+          </div>
+        )}
       </div>
 
       <div className="bg-[#1E1E1E] p-6 rounded-xl shadow mt-12">
